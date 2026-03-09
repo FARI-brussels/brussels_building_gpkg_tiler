@@ -16,7 +16,7 @@ def run(
     config: Path = typer.Option(..., "--config", "-c", exists=True, file_okay=True, dir_okay=False),
 ) -> None:
     cfg = PipelineConfig.from_yaml(config)
-    metrics = run_pipeline(cfg)
+    metrics = run_pipeline(cfg, progress=lambda message: typer.echo(message, err=True))
     typer.echo(
         "Export finished. "
         f"tiles={metrics.tile_count} "

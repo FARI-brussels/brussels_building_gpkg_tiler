@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import math
 import struct
+from collections.abc import Callable
 from collections import defaultdict
 from copy import deepcopy
 from pathlib import Path
@@ -11,7 +12,7 @@ from typing import Any
 import numpy as np
 from pyproj import CRS, Transformer
 
-from .gpkg_reader import read_surfaces
+from .io.gpkg_reader import read_surfaces
 from .models import MaterialStyle, SurfaceFeature, TileInfo
 
 _ARRAY_BUFFER = 34962
@@ -29,6 +30,20 @@ _CLASS_STYLES: dict[str, MaterialStyle] = {
     "tree_trunk": MaterialStyle("tree_trunk", "TreeTrunk", (101.0 / 255.0, 67.0 / 255.0, 33.0 / 255.0, 1.0)),
     "default": MaterialStyle("default", "Default", (176.0 / 255.0, 176.0 / 255.0, 176.0 / 255.0, 1.0)),
 }
+
+
+def _emit_progress(progress: Callable[[str], None] | None, message: str) -> None:
+    if progress is not None:
+        progress(message)
+
+
+def _should_report_tile_progress(index: int, total: int) -> bool:
+    if index == total:
+        return True
+    if total <= 10:
+        return True
+    step = max(1, total // 10)
+    return index % step == 0
 
 
 def _hex_to_rgba(color: str) -> tuple[float, float, float, float]:
@@ -690,6 +705,7 @@ def export_gpkg_to_3d_tiles(
     with_metadata: bool = False,
     class_colors: dict[str, str] | None = None,
     overwrite: bool = False,
+    progress: Callable[[str], None] | None = None,
 ) -> Path:
     if tile_size <= 0:
         raise ValueError("tile_size must be > 0")
@@ -703,6 +719,11 @@ def export_gpkg_to_3d_tiles(
         raise FileExistsError(f"Output directory is not empty: {output_dir}")
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    _emit_progress(
+        progress,
+        f"Reading surfaces from {gpkg_path}"
+        + (f" (layer={layer})" if layer is not None else ""),
+    )
     surfaces, crs = read_surfaces(
         gpkg_path,
         layer=layer,
@@ -710,17 +731,32 @@ def export_gpkg_to_3d_tiles(
         class_field=class_field,
         default_class=default_class,
     )
+    _emit_progress(
+        progress,
+        f"Loaded {len(surfaces)} surface(s) across {len({surface.group_id for surface in surfaces})} group(s)",
+    )
     if no_elevation:
+        _emit_progress(progress, "Normalizing group elevations to zero")
         surfaces = _normalize_group_elevation_to_zero(surfaces)
+    _emit_progress(progress, f"Grouping surfaces into tiles with tile_size={tile_size}")
     tiles = _group_surfaces_into_tiles(surfaces, tile_size)
     if not tiles:
         raise ValueError("No spatial tiles were generated.")
+    _emit_progress(progress, f"Generated {len(tiles)} spatial tile(s)")
 
     to_ecef, ecef_to_wgs84 = _make_transformers(crs)
     z_offset = 0.0 if no_elevation else _source_z_to_ellipsoidal_offset(crs)
     class_styles = _build_class_styles(class_colors)
     tile_infos: list[TileInfo] = []
-    for tile_key in sorted(tiles.keys()):
+    sorted_tile_keys = sorted(tiles.keys())
+    total_tiles = len(sorted_tile_keys)
+    for index, tile_key in enumerate(sorted_tile_keys, start=1):
+        if _should_report_tile_progress(index, total_tiles):
+            _emit_progress(
+                progress,
+                f"Exporting tile {index}/{total_tiles} at grid={tile_key} "
+                f"with {len(tiles[tile_key])} surface(s)",
+            )
         tile_info = _export_tile(
             tile_key,
             tiles[tile_key],
@@ -767,5 +803,6 @@ def export_gpkg_to_3d_tiles(
     }
 
     tileset_path = output_dir / "tileset.json"
+    _emit_progress(progress, f"Writing tileset manifest: {tileset_path}")
     tileset_path.write_text(json.dumps(tileset, indent=2), encoding="utf-8")
     return tileset_path
