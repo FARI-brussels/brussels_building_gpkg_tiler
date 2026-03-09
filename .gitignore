@@ -1,0 +1,52 @@
+# Python caches and build artifacts
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
+
+# Virtual environments and local env files
+.venv/
+venv/
+env/
+.python-version
+.env
+.env.*
+
+# Editor and OS noise
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Generated outputs and temp directories
+output/
+tmp/
+temp/
+
+# Logs
+*.log
+
+# Large geospatial and binary artifacts
+*.gpkg
+*.sqlite
+*.sqlite3
+*.db
+*.glb
+*.b3dm
+*.pnts
+*.zip
+*.7z
+*.gz
+*.bz2
+*.xz

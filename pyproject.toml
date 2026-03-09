@@ -1,0 +1,39 @@
+[project]
+name = "gpkg-tiler"
+version = "0.1.0"
+description = "Tile 3D GeoPackage polygon surfaces into OGC 3D Tiles 1.1 GLB content."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "geopandas>=1.1.0",
+    "mapbox-earcut>=1.0.0",
+    "numpy>=2.0.0",
+    "pyogrio>=0.11.0",
+    "pyproj>=3.7.0",
+    "pyyaml>=6.0.0",
+    "shapely>=2.1.0",
+    "typer>=0.12.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[project.scripts]
+gpkg-tiler = "src.cli:main"
+gpkg-tiler-urbis = "src.urbis_cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+dev-mode-dirs = ["."]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src", "src/gpkg_tiler", "gpkg_tiler"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
