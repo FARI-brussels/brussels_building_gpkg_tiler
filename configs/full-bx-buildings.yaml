@@ -1,0 +1,27 @@
+inputs:
+  gpkg_path: https://urbisdownload.datastore.brussels/UrbIS/Vector/M8/UrbIS-Buildings3D/GPKG/UrbISBuildings3D_31370_GPKG_04000_20260307.zip
+  layer: BuildingFaces
+  building_id_field: BUSOLID_ID
+  class_field: TYPE
+  default_class: default
+
+tiling:
+  tile_size: 800
+  root_geometric_error:
+  no_elevation: true
+  with_metadata: true
+  overwrite: true
+
+artifacts:
+  output_dir: output/full-bx
+
+styles:
+  class_colors:
+    GROUNDSURFACE: "#C8E8B0"
+    OUTERCEILING: "#D8DDE6"
+    OUTERFLOOR: "#B8A37A"
+    ROOFSURFACE: "#CC2222"
+    WALLSURFACE: "#888888"
+
+
+

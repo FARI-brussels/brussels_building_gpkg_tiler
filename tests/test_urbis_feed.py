@@ -7,7 +7,7 @@ from pathlib import Path
 import geopandas as gpd
 from shapely.geometry import Polygon
 
-from gpkg_tiler.urbis_feed import run_urbis_feed_pipeline, select_latest_download
+from src.urbis_feed import run_urbis_feed_pipeline, select_latest_download
 
 
 def _write_sample_gpkg(gpkg_path: Path) -> None:

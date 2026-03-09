@@ -28,7 +28,6 @@ uv run gpkg-tiler init-config --path configs/local.yaml
 
 Example config variants included in this repo:
 
-- `configs/default.yaml`
 - `configs/no-elevation.yaml`
 - `configs/with-metadata.yaml`
 - `configs/test.yaml`
@@ -43,20 +42,6 @@ styles:
     OUTERFLOOR: "#B8A37A"
     ROOFSURFACE: "#CC2222"
     WALLSURFACE: "#888888"
-```
-
-## UrbIS feed workflow
-
-To fetch the latest Brussels-capital GeoPackage from an Atom feed, extract it,
-and export both elevation variants:
-
-```bash
-uv run gpkg-tiler-urbis run \
-  "https://urbisdownload.datastore.brussels/atomfeed/e9ec2aa4-cffd-11ee-bccc-00090ffe0001-en.xml" \
-  /path/to/urbis_run \
-  --layer surfaces \
-  --building-id-field building_id \
-  --class-field surface_type
 ```
 
 ## Notes

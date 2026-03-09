@@ -8,8 +8,8 @@ import geopandas as gpd
 import numpy as np
 from shapely.geometry import Polygon
 
-from gpkg_tiler.models import SurfaceFeature
-from gpkg_tiler.tiler import _normalize_group_elevation_to_zero, export_gpkg_to_3d_tiles
+from src.models import SurfaceFeature
+from src.tiler import _normalize_group_elevation_to_zero, export_gpkg_to_3d_tiles
 
 
 def _load_glb_json(glb_path: Path) -> dict:

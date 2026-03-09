@@ -17,7 +17,7 @@ DEFAULT_CLASS_COLORS: dict[str, str] = {
 
 @dataclass(slots=True)
 class InputConfig:
-    gpkg_path: Path
+    gpkg_path: str | Path
     layer: str | None = None
     building_id_field: str | None = None
     class_field: str | None = None
@@ -58,7 +58,7 @@ class PipelineConfig:
         styles = data.get("styles", {})
         return cls(
             inputs=InputConfig(
-                gpkg_path=Path(inputs["gpkg_path"]),
+                gpkg_path=inputs["gpkg_path"],
                 layer=inputs.get("layer"),
                 building_id_field=inputs.get("building_id_field"),
                 class_field=inputs.get("class_field"),

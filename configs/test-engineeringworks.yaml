@@ -1,19 +1,19 @@
 inputs:
-  gpkg_path: data/surfaces.gpkg
-  layer: surfaces
-  building_id_field: building_id
-  class_field: surface_type
+  gpkg_path: input/saintjosse.gpkg
+  layer: EngineeringWorkFaces
+  building_id_field: EWSOLID_ID
+  class_field: TYPE
   default_class: default
 
 tiling:
-  tile_size: 250.0
+  tile_size: 800
   root_geometric_error:
   no_elevation: true
-  with_metadata: false
+  with_metadata: true
   overwrite: true
 
 artifacts:
-  output_dir: output/no_elevation
+  output_dir: output/test
 
 styles:
   class_colors:
