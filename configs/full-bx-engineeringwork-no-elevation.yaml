@@ -13,7 +13,7 @@ tiling:
   overwrite: true
 
 artifacts:
-  output_dir: output/full-bx-no-elevation
+  output_dir: output/full-bx-engineeringwork-no-elevation
 
 styles:
   class_colors:

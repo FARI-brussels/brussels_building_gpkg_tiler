@@ -8,12 +8,12 @@ inputs:
 tiling:
   tile_size: 800
   root_geometric_error:
-  no_elevation: true
+  no_elevation: false
   with_metadata: true
   overwrite: true
 
 artifacts:
-  output_dir: output/full-bx
+  output_dir: output/full-bx-engineeringwork
 
 styles:
   class_colors:
